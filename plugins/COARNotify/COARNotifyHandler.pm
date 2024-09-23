@@ -78,24 +78,23 @@ sub _inbox_handler
 
     if( grep { "Reject" eq $_ } @types )
     {
-        return _reject_handler( $session, $r, $payload );
+        return _request_handler( $session, $r, "Reject", $payload );
     }
     elsif( grep { "TentativeAccept" eq $_ } @types )
     {
-        return _tentative_accept_handler( $session, $r, $payload );
+        return _request_handler( $session, $r, "TentativeAccept", $payload );
     }
     elsif( grep { "coar-notify:ReviewAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
     {
-        return _announce_review_handler( $session, $r, $payload );
+        return _request_handler( $session, $r, "AnnounceReview", $payload );
     }
     elsif( grep { "coar-notify:EndorsementAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
     {
-        return _announce_endorement_handler( $session, $r, $payload );
+        return _request_handler( $session, $r, "AnnounceEndorsement", $payload );
     }
     else
     {
-        return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY;
-    
+        return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY; 
     }
 
     # Success - must respond with a 2-1 Created and the Location header set to th URL from which the notification data can be retrieved
@@ -105,7 +104,7 @@ sub _inbox_handler
 
 sub _create_ldn
 {
-    my( $session, $payload ) = @_;#
+    my( $session, $type, $payload ) = @_;
    
     my $ds = $session->dataset( "ldn" );
    
@@ -115,6 +114,7 @@ sub _create_ldn
             uuid => $payload->{id},
             from => $payload->{origin}->{id},
             to => $payload->{target}->{id},
+            type => $type,
             content => JSON::encode_json( $payload ),
         },
         $ds
@@ -123,62 +123,19 @@ sub _create_ldn
     return $ldn;
 }
 
-sub _reject_handler
+sub _request_handler
 {
-    my( $session, $r, $payload )  = @_;
+    my( $session, $r, $type, $payload )  = @_;
 
-    print STDERR "handle rejection 2\n";
+    print STDERR "handle $type\n";
     use Data::Dumper;
     print STDERR Dumper( $payload );
 
     # Store the LDN
-    my $ldn = _create_ldn( $session, $payload );
+    my $ldn = _create_ldn( $session, $type, $payload );
 
     return Apache2::Const::DONE;
 }
-
-sub _tentative_accept_handler
-{
-    my( $session, $r, $payload )  = @_;
-
-    print STDERR "handle tentative accept\n";
-    use Data::Dumper;
-    print STDERR Dumper( $payload );
-
-    # Store the LDN
-    my $ldn = _create_ldn( $session, $payload );
-
-    return Apache2::Const::DONE;
-}
-
-sub _announce_review_handler
-{
-    my( $session, $r, $payload )  = @_;
-
-    print STDERR "handle announce review \n";
-    use Data::Dumper;
-    print STDERR Dumper( $payload );
-
-    # Store the LDN
-    my $ldn = _create_ldn( $session, $payload );
-
-    return Apache2::Const::DONE;
-}
-
-sub _announce_endorsement_handler
-{
-    my( $session, $r, $payload )  = @_;
-
-    print STDERR "handle announce endorsement \n";
-    use Data::Dumper;
-    print STDERR Dumper( $payload );
-
-    # Store the LDN
-    my $ldn = _create_ldn( $session, $payload );
-
-    return Apache2::Const::DONE;
-}
-
 
 sub _system_description_handler
 {

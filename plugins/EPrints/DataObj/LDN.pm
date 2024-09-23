@@ -30,9 +30,8 @@ sub get_system_field_info
                 'Offer',
                 'Reject',
                 'TentativeAccept',
-                'TentativeAccept',
-                'coar-notify:EndorsementAction',
-                'coar-notify:ReviewAction',
+                'AnnounceReview',
+                'AnnounceEndorsement',
             ]       
         },
         { name => "content", type => "longtext" },
