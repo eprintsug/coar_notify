@@ -80,6 +80,18 @@ sub _inbox_handler
     {
         return _reject_handler( $session, $r, $payload );
     }
+    elsif( grep { "TentativeAccept" eq $_ } @types )
+    {
+        return _tentative_accept_handler( $session, $r, $payload );
+    }
+    elsif( grep { "coar-notify:ReviewAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
+    {
+        return _announce_review_handler( $session, $r, $payload );
+    }
+    elsif( grep { "coar-notify:EndorsementAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
+    {
+        return _announce_endorement_handler( $session, $r, $payload );
+    }
     else
     {
         return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY;
@@ -124,6 +136,49 @@ sub _reject_handler
 
     return Apache2::Const::DONE;
 }
+
+sub _tentative_accept_handler
+{
+    my( $session, $r, $payload )  = @_;
+
+    print STDERR "handle tentative accept\n";
+    use Data::Dumper;
+    print STDERR Dumper( $payload );
+
+    # Store the LDN
+    my $ldn = _create_ldn( $session, $payload );
+
+    return Apache2::Const::DONE;
+}
+
+sub _announce_review_handler
+{
+    my( $session, $r, $payload )  = @_;
+
+    print STDERR "handle announce review \n";
+    use Data::Dumper;
+    print STDERR Dumper( $payload );
+
+    # Store the LDN
+    my $ldn = _create_ldn( $session, $payload );
+
+    return Apache2::Const::DONE;
+}
+
+sub _announce_endorsement_handler
+{
+    my( $session, $r, $payload )  = @_;
+
+    print STDERR "handle announce endorsement \n";
+    use Data::Dumper;
+    print STDERR Dumper( $payload );
+
+    # Store the LDN
+    my $ldn = _create_ldn( $session, $payload );
+
+    return Apache2::Const::DONE;
+}
+
 
 sub _system_description_handler
 {
