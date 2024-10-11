@@ -27,7 +27,7 @@ sub get_system_field_info
         { name => "from", type => "text" },
         { name => "to", type => "text" },
         { name => "type", type => "set", multiple=>0, options=>[
-                'Offer',
+                'OfferEndorsement',
                 'Reject',
                 'TentativeAccept',
                 'AnnounceReview',
@@ -47,9 +47,9 @@ sub get_dataset_id
 
 sub get_defaults
 {
-    my( $class, $session, $data, $dataset ) = @_;
+    my( $self, $session, $data, $dataset ) = @_;
 
-    $data = $class->SUPER::get_defaults( @_[1..$#_] );
+    $data = $self->SUPER::get_defaults( @_[1..$#_] );
 
     # UUID - TODO
 
@@ -58,6 +58,11 @@ sub get_defaults
 
 sub send_ldn
 {
+
+    my( $self, $session ) = @_;
+
+    my $ds = $session->dataset( "ldn" );
+
     # TODO: Looks up the inbox for this LDN's "to" value
     #       Makes a POST to the given inbox using Content Type "application/ld+json"
     #       Set the timestamp on the LDN record after POST-ing
@@ -65,7 +70,7 @@ sub send_ldn
 
 sub build_payload
 {
-    my( $class, $session, $origin ) = @_;
+    my( $self, $session, $origin ) = @_;
 
     # TODO: Builds a JSON payload including...
     #       @context: Defaults to "https://www.w3.org/ns/activitystreams" and "http://purl.org/coar/notify"
@@ -76,3 +81,64 @@ sub build_payload
     #       target: another LDN inbox - get details from our LDN inbox dataset
     #       type: the kind of LDN we're sending
 }
+
+sub _create_payload
+{
+
+     #$ldn->_create_payload($type,$eprint,$user,$target);
+
+    my( $self, $object, $actor, $target, $sub_object ) = @_;
+
+    print STDERR "self: $self\n";
+    print STDERR "object: $object\n";
+    print STDERR "actor: $actor\n";
+    print STDERR "target: $target\n";
+    print STDERR "sub_object: $sub_object\n";
+
+
+
+
+    my $session = $self->{session};
+    use JSON; 
+    return encode_json({
+		   '@context'=> [
+        "https://www.w3.org/ns/activitystreams",
+        "https://purl.org/coar/notify"
+    ],
+    "origin"=> {
+        "type"=> [
+            "Service"
+        ],
+        "id"=> $session->get_conf("base_url"),
+        "inbox"=> $session->get_conf("base_url")."/coar_notify/inbox",
+    },
+    "id"=> $self->get_value("uuid"),
+    "actor"=> {
+        "id"=> "mailto:".$actor->get_value("email"),
+        "name"=> EPrints::Utils::make_name_string($actor->get_value("name")), #assumes actor is a user
+        "type"=> "Person"
+    },
+    "object"=> {
+        "type"=> [
+            "Page",
+            "sorg:WebPage"
+        ],
+        "id"=> $object->url,
+        "ietf:cite-as"=> $object->url,
+        "url"=> {
+            "id"=> $sub_object->url,
+            "mediaType"=> $sub_object->get_value("mime_type"),
+            "type"=> [
+                "Article",
+                "sorg:ScholarlyArticle"
+            ]
+        }
+    },
+    "target"=> {
+        "id"=> $target,
+        "inbox"=> $target,
+        "type"=> "Service"
+    }
+   });
+}
+
