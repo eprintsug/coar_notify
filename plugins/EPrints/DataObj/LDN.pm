@@ -26,7 +26,7 @@ sub get_system_field_info
         { name => "uuid", type => "uuid" },
         { name => "from", type => "text" },
         { name => "to", type => "text" },
-        { name => "type", type => "set", multiple=>1, options=>[
+        { name => "type", type => "set", multiple=>0, options=>[
                 'Offer',
                 'Reject',
                 'TentativeAccept',
