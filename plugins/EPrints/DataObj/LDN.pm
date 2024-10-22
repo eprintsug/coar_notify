@@ -25,7 +25,7 @@ sub get_system_field_info
         { name=>"timestamp", type=>"time", required=>0, },
         { name => "uuid", type => "uuid" },
         { name => "from", type => "text" },
-        { name => "to", type => "text" },
+        { name => "to", type => "id" },
         { name => "type", type => "set", multiple=>0, options=>[
                 'OfferEndorsement',
                 'Reject',
@@ -94,9 +94,6 @@ sub _create_payload
     print STDERR "actor: $actor\n";
     print STDERR "target: $target\n";
     print STDERR "sub_object: $sub_object\n";
-
-
-
 
     my $session = $self->{session};
     use JSON; 
