@@ -84,18 +84,34 @@ sub build_payload
 
 sub _create_payload
 {
-
-     #$ldn->_create_payload($type,$eprint,$user,$target);
-
-    my( $self, $object, $actor, $target, $sub_object ) = @_;
+    my( $self, $object, $actor, $sub_object ) = @_;
 
     print STDERR "self: $self\n";
     print STDERR "object: $object\n";
     print STDERR "actor: $actor\n";
-    print STDERR "target: $target\n";
     print STDERR "sub_object: $sub_object\n";
 
     my $session = $self->{session};
+
+    # before we can build the payload we need some basic details
+    # first, who are we sending to
+    if( !$self->is_set( "to" ) )
+    {
+        $session->log( "Cannot build payload with no target ID set (LDN: ". $self->id );
+        return 0;
+    }
+
+    # is this "to" value a valid LDN Inbox that we know or can discover
+    my $target;
+    my $ldn_inbox_ds = $session->dataset( "ldn_inbox" );
+    my $ldn_inbox = $ldn_inbox_ds->dataobj_class->find_or_create( $session, $self->value( "to" ) );
+    if( !$ldn_inbox )
+    {
+        $session->log( "Could not find LDN Inbox. LDN: " . $self->id ."; Target: " . $self->value( "to" ) );
+    }
+
+    # we have our details, let's build our payload
+    # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
     use JSON; 
     return encode_json({
 		   '@context'=> [
@@ -132,9 +148,9 @@ sub _create_payload
         }
     },
     "target"=> {
-        "id"=> $target,
-        "inbox"=> $target,
-        "type"=> "Service"
+        "id"=> $ldn_inbox->value( "id" ),
+        "inbox"=> $ldn_inbox->value( "endpoint" ),
+        "type"=> $ldn_inbox->value( "type" )
     }
    });
 }
