@@ -47,35 +47,33 @@ sub find_or_create
     my( $class, $session, $id ) = @_;
 
     my $inbox = $class->search_by_id($session, $id);
-    if(!$inbox){
-      my $url = $class->get_service_url($session, $id);
-      my $inbox_url = $class->discover_inbox($session, $url);
-      if($inbox_url)
-      {
-	      #        $class->create_from_data($session,
-	      #		{id => $id,
-	      #   endpoint => $inbox_url,
-	      #		 #last_accessed => undef, 
-	      #   type => "Service"},
-	      #$class->get_dataset_id
-	      #	);
-	$inbox = EPrints::DataObj::LDNInbox->create_from_data($class,
-          $session,
-          {
-            id => $id,
-	    endpoint => $inbox_url,
-	    #last_accessed => undef, 
-	    type => "Service"
-          },
-          $class->get_dataset_id
-        );
-
-      } else {
-        $session->log("LDN Inbox data object was not found and could not be created because the service url does not return a valid inbox endpoint. Service url: ($url)");
-	return 0;
-      }
-    }else{
-      print STDERR "Inbox dataobject present... using that\n";
+    if( !$inbox )
+    {
+        my $url = $class->get_service_url($session, $id);
+        my $inbox_url = $class->discover_inbox($session, $url);
+        if($inbox_url)
+        {
+	        $inbox = $class->create_from_data(
+                $session,
+                {
+                    id => $id,
+	                endpoint => $inbox_url,
+	                #last_accessed => undef, 
+	                type => "Service"
+                },
+                $session->dataset( $class->get_dataset_id )
+            );
+            print STDERR "we have created an inbox.... $inbox\n";
+        }
+        else
+        {
+            $session->log( "LDN Inbox data object was not found and could not be created because the service url does not return a valid inbox endpoint. Service url: ($url)" );
+	        return 0;
+        }
+    }
+    else
+    {
+        print STDERR "Inbox dataobject present... using that\n";
     }
     return $inbox;
 }
