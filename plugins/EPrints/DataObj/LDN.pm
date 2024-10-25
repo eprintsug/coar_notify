@@ -11,7 +11,7 @@ use Digest::MD5 qw(md5_hex);
 
 # The new method can simply return the constructor of the super class (Dataset)
 sub new
-{
+{ 
     return shift->SUPER::new( @_ );
 }
 
@@ -82,6 +82,59 @@ sub build_payload
     #       type: the kind of LDN we're sending
 }
 
+sub create_payload_and_send
+{
+    
+    my( $self, $object, $actor, $sub_object ) = @_;
+
+    my $json = $self->_create_payload($object, $actor, $sub_object);
+
+    print STDERR "JSON : $json\n";
+    $ldn->set_value("content", $json);
+    $ldn->commit;
+
+    $ldn->_send;
+}
+
+sub _send
+{
+   my( $self ) = @_;
+ 
+   my $ldn_inbox = $self->_inbox;
+   # send an ldn to it's to
+   my $ua = new LWP::UserAgent;
+ 
+   #   my $req = new HTTP::Request('POST', $ldn_inbox->value("endpoint"));
+   my $req = new HTTP::Request('POST', 'https://somewhere.else');
+ 
+   my $response = $ua->request($req);
+   #TODO this in body of request
+   #$self->value("content")
+
+   
+}
+
+sub _inbox
+{
+    my( $self ) = @_;
+
+    if( !defined $self->{inbox} )
+    {
+      my $ldn_inbox_ds = $session->dataset( "ldn_inbox" );
+      $self->{inbox} = $ldn_inbox_ds->dataobj_class->find_or_create( $session, $self->value( "to" ) );
+
+      if( !$self->{inbox} )
+      {
+        $session->log( "Could not find LDN Inbox. LDN: " . $self->id ."; Target: " . $self->value( "to" ) );
+        return 0;
+      }
+      $self->{inbox} = $ldn_inbox;
+
+    }
+
+    return $self->{inbox};
+}
+
 sub _create_payload
 {
     my( $self, $object, $actor, $sub_object ) = @_;
@@ -102,13 +155,7 @@ sub _create_payload
     }
 
     # is this "to" value a valid LDN Inbox that we know or can discover
-    my $target;
-    my $ldn_inbox_ds = $session->dataset( "ldn_inbox" );
-    my $ldn_inbox = $ldn_inbox_ds->dataobj_class->find_or_create( $session, $self->value( "to" ) );
-    if( !$ldn_inbox )
-    {
-        $session->log( "Could not find LDN Inbox. LDN: " . $self->id ."; Target: " . $self->value( "to" ) );
-    }
+    my $ldn_inbox = $self->_inbox;
 
     # we have our details, let's build our payload
     # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
@@ -154,4 +201,5 @@ sub _create_payload
     }
    });
 }
+
 

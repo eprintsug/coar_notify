@@ -42,6 +42,7 @@ sub get_defaults
 	return $data;
 }
 
+
 sub find_or_create
 {
     my( $class, $session, $id ) = @_;
