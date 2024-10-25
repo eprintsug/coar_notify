@@ -35,6 +35,13 @@ sub get_system_field_info
             ]       
         },
         { name => "content", type => "longtext" },
+        { name => "status", type => "set", multiple=>0, options=>[
+                'unsent',
+                'sent',
+                'failed',
+                'response_received',
+            ]
+        },
     );
 }
 
@@ -51,35 +58,7 @@ sub get_defaults
 
     $data = $self->SUPER::get_defaults( @_[1..$#_] );
 
-    # UUID - TODO
-
     return $data;
-}
-
-sub send_ldn
-{
-
-    my( $self, $session ) = @_;
-
-    my $ds = $session->dataset( "ldn" );
-
-    # TODO: Looks up the inbox for this LDN's "to" value
-    #       Makes a POST to the given inbox using Content Type "application/ld+json"
-    #       Set the timestamp on the LDN record after POST-ing
-}
-
-sub build_payload
-{
-    my( $self, $session, $origin ) = @_;
-
-    # TODO: Builds a JSON payload including...
-    #       @context: Defaults to "https://www.w3.org/ns/activitystreams" and "http://purl.org/coar/notify"
-    #       origin: This will (always?) default to us! Need to provide type, id and inbox
-    #       actor: Again this will default to us, but this time we provide a name from than an inbox
-    #       id: Uuid which we should already have in the LDN object
-    #       object: Convert the given dataobj into an LDN object - a function for each invidual dataobj, but almost certainly just an eprint for now. Needs a type, id and cite-as (see signposting)
-    #       target: another LDN inbox - get details from our LDN inbox dataset
-    #       type: the kind of LDN we're sending
 }
 
 sub create_payload_and_send
@@ -87,39 +66,56 @@ sub create_payload_and_send
     
     my( $self, $object, $actor, $sub_object ) = @_;
 
+    # first create the payload
     my $json = $self->_create_payload($object, $actor, $sub_object);
+    $self->set_value("content", $json);
+    $self->commit;
 
-    print STDERR "JSON : $json\n";
-    $ldn->set_value("content", $json);
-    $ldn->commit;
-
-    $ldn->_send;
+    # now we have it, we can send it!
+    $self->_send;
 }
 
 sub _send
 {
-   my( $self ) = @_;
+    my( $self ) = @_;
  
-   my $ldn_inbox = $self->_inbox;
-   # send an ldn to it's to
-   my $ua = new LWP::UserAgent;
+    my $ldn_inbox = $self->_inbox;
  
-   #   my $req = new HTTP::Request('POST', $ldn_inbox->value("endpoint"));
-   my $req = new HTTP::Request('POST', 'https://somewhere.else');
+    # send an ldn to it's to
+    my $ua = new LWP::UserAgent;
  
-   my $response = $ua->request($req);
-   #TODO this in body of request
-   #$self->value("content")
+    my $res = $ua->post(
+        #$ldn_inbox->value( "endpoint" ),
+        'https://some.endpoint',
+        'Content-Type' => 'application/ld+json',
+        'Content' => encode_json $self->value( "content" ) 
+    );
 
-   
+    # we've now sent this, so at least record a timestamp
+    $self->set_value( "timestamp", EPrints::Time::get_iso_timestamp );
+
+    if( $res->is_success )
+    {
+        $self->set_value( "status", "sent" );
+    }
+    else
+    {
+        $self->set_value( "status", "fail" );
+        $self->{session}->log( "Issue sending LDN (ID: " . $self->id . "). Error: '" . $res->status_line . "'" );
+    }
+
+    $self->commit;
 }
 
 sub _inbox
 {
     my( $self ) = @_;
+    
+    my $session = $self->{session};
 
     if( !defined $self->{inbox} )
     {
+
       my $ldn_inbox_ds = $session->dataset( "ldn_inbox" );
       $self->{inbox} = $ldn_inbox_ds->dataobj_class->find_or_create( $session, $self->value( "to" ) );
 
@@ -128,10 +124,7 @@ sub _inbox
         $session->log( "Could not find LDN Inbox. LDN: " . $self->id ."; Target: " . $self->value( "to" ) );
         return 0;
       }
-      $self->{inbox} = $ldn_inbox;
-
     }
-
     return $self->{inbox};
 }
 
