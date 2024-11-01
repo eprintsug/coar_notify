@@ -22,8 +22,9 @@ sub get_system_field_info
     return
     (
         { name=>"ldnid", type=>"counter", required=>1, import=>0, show_in_html=>0, can_clone=>0, sql_counter=>"ldnid" },
-        { name=>"timestamp", type=>"time", required=>0, },
+        { name=>"timestamp", type=>"time", required=>0 },
         { name => "uuid", type => "uuid" },
+        { name => "in_reply_to", type => "id" },
         { name => "from", type => "text" },
         { name => "to", type => "id" },
         { name => "type", type => "set", multiple=>0, options=>[
@@ -34,6 +35,8 @@ sub get_system_field_info
                 'AnnounceEndorsement',
             ]       
         },
+        { name => "subject_id", type=> "int" },
+        { name => "subject_dataset", type=> "id" },
         { name => "content", type => "longtext" },
         { name => "status", type => "set", multiple=>0, options=>[
                 'unsent',
@@ -132,11 +135,6 @@ sub _create_payload
 {
     my( $self, $object, $actor, $sub_object ) = @_;
 
-    print STDERR "self: $self\n";
-    print STDERR "object: $object\n";
-    print STDERR "actor: $actor\n";
-    print STDERR "sub_object: $sub_object\n";
-
     my $session = $self->{session};
 
     # before we can build the payload we need some basic details
@@ -195,4 +193,32 @@ sub _create_payload
    });
 }
 
+sub get_content_value{
 
+    my( $self, $key ) = @_;
+
+    return undef if !$self->is_set( "content" );
+
+    my $content = decode_json( $self->value( "content" ) );
+
+    if( defined $content->{$key} )
+    {
+        return $content->{$key};
+    }
+    else
+    {
+        return undef;
+    }
+}
+
+sub get_responses{
+
+    my( $self ) = @_;
+
+    return $self->dataset->search(
+        filters => [
+            { meta_fields => [qw( in_reply_to )], value => $self->value( "uuid" ) },
+        ],
+    );
+
+}

@@ -84,11 +84,11 @@ sub _inbox_handler
     {
         return _request_handler( $session, $r, "TentativeAccept", $payload );
     }
-    elsif( grep { "coar-notify:ReviewAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
+    elsif( ( grep { "coar-notify:ReviewAction" eq $_ } @types ) && ( grep { "Announce" eq $_ } @types ) )
     {
         return _request_handler( $session, $r, "AnnounceReview", $payload );
     }
-    elsif( grep { "coar-notify:EndorsementAction" eq $_ } @types && grep { "Announce" eq $_ } @types)
+    elsif( ( grep { "coar-notify:EndorsementAction" eq $_ } @types ) && ( grep { "Announce" eq $_ } @types ) )
     {
         return _request_handler( $session, $r, "AnnounceEndorsement", $payload );
     }
@@ -107,18 +107,22 @@ sub _create_ldn
     my( $session, $type, $payload ) = @_;
    
     my $ds = $session->dataset( "ldn" );
-   
-    my $ldn = EPrints::DataObj::LDN->create_from_data(
-        $session,
+    my $ldn = $ds->create_dataobj(
         {
             uuid => $payload->{id},
             from => $payload->{origin}->{id},
             to => $payload->{target}->{id},
             type => $type,
             content => JSON::encode_json( $payload ),
+            timestamp => EPrints::Time::get_iso_timestamp,
         },
-        $ds
     );
+
+    if( defined $payload->{inReplyTo} )
+    {
+        $ldn->set_value( "in_reply_to", $payload->{inReplyTo} );
+        $ldn->commit;
+    }
 
     return $ldn;
 }
@@ -126,10 +130,6 @@ sub _create_ldn
 sub _request_handler
 {
     my( $session, $r, $type, $payload )  = @_;
-
-    print STDERR "handle $type\n";
-    use Data::Dumper;
-    print STDERR Dumper( $payload );
 
     # Store the LDN
     my $ldn = _create_ldn( $session, $type, $payload );
