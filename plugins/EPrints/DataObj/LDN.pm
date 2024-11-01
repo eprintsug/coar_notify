@@ -147,6 +147,9 @@ sub _create_payload
 
     # is this "to" value a valid LDN Inbox that we know or can discover
     my $ldn_inbox = $self->_inbox;
+    
+    # assuming actor is a user but not assuming that that user will have a name value...
+    my $actor_name = EPrints::Utils::tree_to_utf8( $actor->render_description );
 
     # we have our details, let's build our payload
     # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
@@ -166,7 +169,7 @@ sub _create_payload
     "id"=> $self->get_value("uuid"),
     "actor"=> {
         "id"=> "mailto:".$actor->get_value("email"),
-        "name"=> EPrints::Utils::make_name_string($actor->get_value("name")), #assumes actor is a user
+        "name"=> $actor_name,
         "type"=> "Person"
     },
     "object"=> {
