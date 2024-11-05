@@ -33,6 +33,7 @@ sub get_system_field_info
                 'TentativeAccept',
                 'AnnounceReview',
                 'AnnounceEndorsement',
+                'TentativeReject',
             ]       
         },
         { name => "subject_id", type=> "int" },
@@ -196,6 +197,7 @@ sub _create_payload
    });
 }
 
+# get a value from the payload/json content - may return a single value, may return a json hash 
 sub get_content_value{
 
     my( $self, $key ) = @_;
@@ -214,6 +216,7 @@ sub get_content_value{
     }
 }
 
+# get all LDNs that are a response to this LDN as processed by our LDN inbox handler
 sub get_responses{
 
     my( $self ) = @_;
@@ -222,6 +225,13 @@ sub get_responses{
         filters => [
             { meta_fields => [qw( in_reply_to )], value => $self->value( "uuid" ) },
         ],
+        custom_order => "-timestamp",
     );
+}
 
+sub get_latest_response{
+
+    my( $self ) = @_;
+
+    return $self->get_responses->item(0);
 }
