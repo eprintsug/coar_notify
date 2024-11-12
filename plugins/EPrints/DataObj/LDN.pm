@@ -2,6 +2,7 @@ package EPrints::DataObj::LDN;
 
 our @ISA = qw( EPrints::DataObj );
 
+use COARNotify::Utils;
 use JSON qw(decode_json encode_json);
 
 use strict;
@@ -26,7 +27,7 @@ sub get_system_field_info
         { name => "uuid", type => "uuid" },
         { name => "in_reply_to", type => "id" },
         { name => "from", type => "text" },
-        { name => "to", type => "id" },
+        { name => "to", type => "id", render_single_value => "COARNotify::Utils::render_ldn_to" },
         { name => "type", type => "set", multiple=>0, options=>[
                 'OfferEndorsement',
                 'Reject',
