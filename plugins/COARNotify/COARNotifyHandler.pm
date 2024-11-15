@@ -80,6 +80,10 @@ sub _inbox_handler
     {
         return _request_handler( $session, $r, "Reject", $payload );
     }
+    elsif( grep { "TentativeReject" eq $_ } @types )
+    {
+        return _request_handler( $session, $r, "TentativeReject", $payload );
+    }
     elsif( grep { "TentativeAccept" eq $_ } @types )
     {
         return _request_handler( $session, $r, "TentativeAccept", $payload );

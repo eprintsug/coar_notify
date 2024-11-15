@@ -6,6 +6,7 @@
     <!-- LDN Fields -->
     <epp:phrase id="ldn_fieldname_timestamp">Timestamp</epp:phrase>
     <epp:phrase id="ldn_fieldname_to">To</epp:phrase>
+    <epp:phrase id="ldn_fieldname_from">From</epp:phrase>
     <epp:phrase id="ldn_fieldname_type">Type</epp:phrase>
 
     <!-- LDN Types -->
