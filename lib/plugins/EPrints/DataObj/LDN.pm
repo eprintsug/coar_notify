@@ -89,11 +89,13 @@ sub _send
     # send an ldn to it's to
     my $ua = new LWP::UserAgent;
  
+    my $json = JSON->new->allow_nonref;
+
     my $res = $ua->post(
         #$ldn_inbox->value( "endpoint" ),
         'https://some.endpoint',
         'Content-Type' => 'application/ld+json',
-        'Content' => encode_json $self->value( "content" ) 
+        'Content' => $json->encode( $self->value( "content" ) )
     );
 
     # we've now sent this, so at least record a timestamp
@@ -235,4 +237,16 @@ sub get_latest_response{
     my( $self ) = @_;
 
     return $self->get_responses->item(0);
+}
+
+# get the ldn this ldn is replying to
+sub get_in_reply_to_ldn{
+
+    my( $self ) = @_;
+
+    return $self->dataset->search(
+        filters => [
+            { meta_fields => [qw( uuid )], value => $self->value( "in_reply_to" ) },
+        ],
+    )->item(0);
 }

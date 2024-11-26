@@ -25,9 +25,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/COARNotify/COARNotifyHandler.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>f6574de2725b17c3263c514e8e8f92a4</hash>
+          <hash>8698c58c31a334974b132770acb97ba5</hash>
           <hash_type>MD5</hash_type>
-          <filesize>3684</filesize>
+          <filesize>3714</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -41,9 +41,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDN.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>c806fe1ec201536ced5dda2152a996ff</hash>
+          <hash>a90691acab16325f43f8a68b024f62c9</hash>
           <hash_type>MD5</hash_type>
-          <filesize>6040</filesize>
+          <filesize>6343</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -60,7 +60,7 @@
       <content>install</content>
     </document>
   </documents>
-  <version>0.1</version>
+  <version>0.2</version>
   <creators>
     <item>
       <name>
