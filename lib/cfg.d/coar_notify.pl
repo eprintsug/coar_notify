@@ -27,4 +27,25 @@ $c->{custom_handlers}->{coar_notify}->{function} = sub
     return EPrints::Const::OK;
 };
 
+{
+package EPrints::Script::Compiled;
+use strict;
 
+sub run_ldn_json
+{
+    my( $self, $state, $ldn ) = @_;
+
+    my $session = $state->{session};
+
+    $ldn = $ldn->[0];
+
+    my $content = $ldn->value( "content" );
+
+    my $json = JSON->new->allow_nonref;
+    my $json_text = $json->decode( $content );
+    my $text = $session->make_text( $json->pretty->encode( $json_text ) );
+
+    return [ $text, "XHTML" ];
+}
+
+}

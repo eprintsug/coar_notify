@@ -9,9 +9,9 @@
           <datasetid>document</datasetid>
           <filename>cfg.d/coar_notify.pl</filename>
           <mime_type>text/plain</mime_type>
-          <hash>a0d13b25e969724c3ac14e6c3ad29a37</hash>
+          <hash>c58fd96a78b79152f2a24fa4e6b90be7</hash>
           <hash_type>MD5</hash_type>
-          <filesize>713</filesize>
+          <filesize>1123</filesize>
           <data encoding='base64'>IyBFbmFibGUgTGlua2VkIERhdGEgTm90aWZpY2F0aW9ucyBJbmJveAokYy0+e2xkbl9pbmJveH0g
 PSAxOwoKdXNlIEVQcmludHM6OkRhdGFPYmo6OkxETjsKdXNlIEVQcmludHM6OkRhdGFPYmo6OkxE
 TkluYm94OwoKIyBMRE4gRGF0YXNldAokYy0+e2RhdGFzZXRzfS0+e2xkbn0gPSB7CiAgICBjbGFz
@@ -24,7 +24,14 @@ b3h8c3lzdGVtX2Rlc2NyaXB0aW9uKSc7CiRjLT57Y3VzdG9tX2hhbmRsZXJzfS0+e2NvYXJfbm90
 aWZ5fS0+e2Z1bmN0aW9ufSA9IHN1Ygp7CiAgICBteSggJHIgKSA9IEBfOwogCiAgICAkci0+aGFu
 ZGxlciggJ3Blcmwtc2NyaXB0JyApOwogICAgJHItPnNldF9oYW5kbGVycyggUGVybFJlc3BvbnNl
 SGFuZGxlciA9PiBbICdDT0FSTm90aWZ5OjpDT0FSTm90aWZ5SGFuZGxlcicgXSApOwogICAgcmV0
-dXJuIEVQcmludHM6OkNvbnN0OjpPSzsKfTsKCgo=
+dXJuIEVQcmludHM6OkNvbnN0OjpPSzsKfTsKCnsKcGFja2FnZSBFUHJpbnRzOjpTY3JpcHQ6OkNv
+bXBpbGVkOwp1c2Ugc3RyaWN0OwoKc3ViIHJ1bl9sZG5fanNvbgp7CiAgICBteSggJHNlbGYsICRz
+dGF0ZSwgJGxkbiApID0gQF87CgogICAgbXkgJHNlc3Npb24gPSAkc3RhdGUtPntzZXNzaW9ufTsK
+CiAgICAkbGRuID0gJGxkbi0+WzBdOwoKICAgIG15ICRjb250ZW50ID0gJGxkbi0+dmFsdWUoICJj
+b250ZW50IiApOwoKICAgIG15ICRqc29uID0gSlNPTi0+bmV3LT5hbGxvd19ub25yZWY7CiAgICBt
+eSAkanNvbl90ZXh0ID0gJGpzb24tPmRlY29kZSggJGNvbnRlbnQgKTsKICAgIG15ICR0ZXh0ID0g
+JHNlc3Npb24tPm1ha2VfdGV4dCggJGpzb24tPnByZXR0eS0+ZW5jb2RlKCAkanNvbl90ZXh0ICkg
+KTsKCiAgICByZXR1cm4gWyAkdGV4dCwgIlhIVE1MIiBdOwp9Cgp9Cg==
 </data>
         </file>
         <file>
