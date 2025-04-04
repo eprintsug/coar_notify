@@ -9,6 +9,7 @@ use strict;
 use Data::Dumper;
 use Encode qw( encode_utf8 );
 use Digest::MD5 qw(md5_hex);
+use APR::UUID;
 
 # The new method can simply return the constructor of the super class (Dataset)
 sub new
@@ -35,10 +36,12 @@ sub get_system_field_info
                 'AnnounceReview',
                 'AnnounceEndorsement',
                 'TentativeReject',
+                'Announce',
             ]       
         },
         { name => "subject_id", type=> "int" },
         { name => "subject_dataset", type=> "id" },
+        { name => "object", type=> "text" },
         { name => "content", type => "longtext" },
         { name => "status", type => "set", multiple=>0, options=>[
                 'unsent',
@@ -88,12 +91,12 @@ sub _send
  
     # send an ldn to it's to
     my $ua = new LWP::UserAgent;
- 
+
     my $res = $ua->post(
-        #$ldn_inbox->value( "endpoint" ),
-        'https://some.endpoint',
+        $ldn_inbox->value( "endpoint" ),
+        #'https://some.endpoint',
         'Content-Type' => 'application/ld+json',
-        'Content' => encode_json $self->value( "content" ) 
+        'Content' => $self->value( "content" ) 
     );
 
     # we've now sent this, so at least record a timestamp
@@ -149,15 +152,20 @@ sub _create_payload
 
     # is this "to" value a valid LDN Inbox that we know or can discover
     my $ldn_inbox = $self->_inbox;
-    
+ 
+    if( $self->value( "type" ) eq "Announce" )
+    {
+        return $self->_create_relationship_payload( $session, $ldn_inbox, $object, $actor );
+    }
+
     # assuming actor is a user but not assuming that that user will have a name value...
     my $actor_name = EPrints::Utils::tree_to_utf8( $actor->render_description );
 
     # we have our details, let's build our payload
     # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
     use JSON; 
-    return encode_json({
-		   '@context'=> [
+    my $payload = encode_json({
+	   '@context'=> [
         "https://www.w3.org/ns/activitystreams",
         "https://purl.org/coar/notify"
     ],
@@ -197,6 +205,63 @@ sub _create_payload
     }
    });
 }
+
+sub _create_relationship_payload
+{
+    my( $self, $session, $ldn_inbox, $object, $actor ) = @_;
+
+    # assuming actor is a user but not assuming that that user will have a name value...
+    my $actor_name = EPrints::Utils::tree_to_utf8( $actor->render_description );
+
+    # we have our details, let's build our payload
+    # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
+    use JSON; 
+    my $payload = encode_json({
+	   '@context'=> [
+        "https://www.w3.org/ns/activitystreams",
+        "https://purl.org/coar/notify"
+    ],
+    "origin"=> {
+        "type"=> [
+            "Service"
+        ],
+        "id"=> $session->get_conf("base_url"),
+        "inbox"=> $session->get_conf("base_url")."/coar_notify/inbox",
+    },
+    "id"=> $self->get_value("uuid"),
+    "actor"=> {
+        "id"=> "mailto:".$actor->get_value("email"),
+        "name"=> $actor_name,
+        "type"=> "Person"
+    },
+    "context"=> {
+        "id"=>$self->value( "object" ),
+        "type"=>[
+            "Page",
+            "sorg:AboutPage",
+        ]
+    },
+    "object"=> {
+        "as:object"=> $self->value( "object" ),
+        "as:relationship"=> "http://purl.org/vocab/frbr/core#supplement",
+        "as:subject"=> $object->url,
+        "id"=> "urn:uuid:" . APR::UUID->new->format(),
+        "type"=> "Relationship",
+    },
+    "target"=> {
+        "id"=> $ldn_inbox->value( "id" ),
+        "inbox"=> $ldn_inbox->value( "endpoint" ),
+        "type"=> $ldn_inbox->value( "type" ),
+    },
+    "type"=> 
+        [
+            "Announce",
+            "coar-notify:RelationshipAction"
+        ]
+   });
+}
+
+
 
 # get a value from the payload/json content - may return a single value, may return a json hash 
 sub get_content_value{

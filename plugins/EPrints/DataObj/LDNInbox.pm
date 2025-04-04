@@ -46,11 +46,14 @@ sub get_defaults
 sub find_or_create
 {
     my( $class, $session, $id ) = @_;
+    print STDERR "id....$id\n";
 
     my $inbox = $class->search_by_id($session, $id);
     if( !$inbox )
-    {
-        my $url = $class->get_service_url($session, $id);
+    {    
+        # get the url from our config if we have it... but it may just be a url we want to keep and doesn't correspond with a config mapping
+        my $url = $class->get_service_url($session, $id) ? $class->get_service_url($session, $id) : $id;
+
         my $inbox_url = $class->discover_inbox($session, $url);
         if($inbox_url)
         {
@@ -83,12 +86,15 @@ sub discover_inbox
 {
 
   my( $class, $session, $url ) = @_;
-
+    print STDERR "url for discover_inbox....$url\n";
   use HTTP::Link::Parser ':standard';
   use LWP::UserAgent;
 
   my $ua = LWP::UserAgent->new;
   my $response = $ua->head($url);
+
+    print STDERR "response: $response\n";
+    print STDERR "body: " . $response->code . "...." . $response->content . "\n";
 
   # Parse link headers into an RDF::Trine::Model.
   my $model = parse_links_into_model($response);
