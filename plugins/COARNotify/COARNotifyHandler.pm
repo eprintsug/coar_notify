@@ -184,8 +184,8 @@ sub _request_relationship_handler
     # get the object = we expect this to be a landing page for an item in the repository
     my $object = $payload->{object}->{'as:object'};
     my $urlpath = $session->get_repository->get_conf( 'base_url' );
-    if( $object =~ s! ^${urlpath}/id/eprint/(0*)([1-9][0-9]*)\b !!x ||
-        $object =~ s! ^$urlpath/(0*)([1-9][0-9]*)\b !!x )
+    if( $object =~ s! ^${urlpath}/id/eprint/(0*)([1-9][0-9]*)\b !!x )
+        #|| $object =~ s! ^$urlpath/(0*)([1-9][0-9]*)\b !!x ) # option to support both formats???
     {
         my $dataobjid = $2;
         my $ds = $session->get_repository->dataset( "archive" );

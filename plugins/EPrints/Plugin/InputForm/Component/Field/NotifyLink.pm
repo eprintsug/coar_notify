@@ -128,14 +128,13 @@ sub _render_notify_requests
     my $div = $session->make_element( 'div', class=>'ep_block notify_link_requests' );
 
     # get our outgoing ldns
-    my $ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
-    if( $ldns->count > 0 )
+    my $outgoing_ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
+    if( $outgoing_ldns->count > 0 )
     {
-
         $div->appendChild( my $outgoing_header = $session->make_element( 'h3' ) );
         $outgoing_header->appendChild( $self->html_phrase( "outgoing_header" ) );
 
-        $ldns->map( sub {
+        $outgoing_ldns->map( sub {
             (undef, undef, my $ldn ) = @_;
 
             my $status = $ldn->value( "status" );
@@ -146,7 +145,20 @@ sub _render_notify_requests
     }
 
     # this may also be a useful place to show anything that has linked to us
+    my $incoming_ldns = COARNotify::Utils::get_links_from_repositories( $session, $eprint );
+    if( $incoming_ldns->count > 0 )
+    {        
+        $div->appendChild( my $outgoing_header = $session->make_element( 'h3' ) );
+        $outgoing_header->appendChild( $self->html_phrase( "incoming_header" ) );
+        $incoming_ldns->map( sub {
+            (undef, undef, my $ldn ) = @_;
 
+            my $status = "sent"; # highlights these as successes, which they should be if we're storing them from incoming requests
+
+            $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+        });
+    }
 
     return $div;
 }
