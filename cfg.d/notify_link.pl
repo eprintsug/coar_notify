@@ -26,6 +26,8 @@ $c->{render_notify_links} = sub {
         $outgoing_ldns->map( sub {
             (undef, undef, my $ldn ) = @_;
 
+            return if $ldn->value( "status" ) ne "sent";
+
             $ul->appendChild( my $li = $session->make_element( "li" ) );
             $li->appendChild( my $a = $session->make_element( "a", 
                 target => "_blank",
