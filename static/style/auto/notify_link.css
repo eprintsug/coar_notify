@@ -1,0 +1,37 @@
+/**** Notify Link ****/
+
+/* Request */
+.notify_link_requests{
+    text-align: left;
+}
+
+.notify_link_ldn_request{
+    margin-bottom: 10px;
+    padding: 10px;
+
+    background: #f8f9fa;
+    border: 1px solid #c6c7c8;
+    border-left: 5px solid #e19141; // default to amber/pending status
+}
+
+.notify_link_ldn_request.notify_link_fail{
+    border-left: 5px solid #c41f1f;
+}
+
+.notify_link_ldn_request.notify_link_sent{
+    border-left: 5px solid #1f7e02;
+}
+
+.notify_link_ldn .notify_link_metadata{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.notify_link_ldn dt{
+    font-weight: bold;
+}
+
+.notify_link_ldn dd{
+    margin: 0;
+}

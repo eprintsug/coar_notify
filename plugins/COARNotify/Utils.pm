@@ -22,4 +22,19 @@ sub render_ldn_to
     }
 }
 
+# get an eprint's attempts to link to another repository
+sub get_notify_link_requests
+{
+    my( $session, $eprint ) = @_;
+
+    return $session->dataset( "ldn" )->search(
+        filters => [
+            { meta_fields => [qw( subject_dataset )], value => "eprint" },
+            { meta_fields => [qw( subject_id )], value => $eprint->id },
+            { meta_fields => [qw( type )], value => "Announce" },
+        ],
+        custom_order => "-timestamp",
+    );
+}
+
 1;

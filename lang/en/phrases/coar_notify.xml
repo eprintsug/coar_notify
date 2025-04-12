@@ -8,6 +8,7 @@
     <epp:phrase id="ldn_fieldname_to">To</epp:phrase>
     <epp:phrase id="ldn_fieldname_from">From</epp:phrase>
     <epp:phrase id="ldn_fieldname_type">Type</epp:phrase>
+    <epp:phrase id="ldn_fieldname_object">Object</epp:phrase>
 
     <!-- LDN Types -->
     <epp:phrase id="ldn_fieldopt_type_OfferEndorsement">Request Endorsement</epp:phrase>
@@ -16,5 +17,18 @@
     <epp:phrase id="ldn_fieldopt_type_AnnounceReview">Announce Review</epp:phrase>
     <epp:phrase id="ldn_fieldopt_type_AnnounceEndorsement">Announce Endorsement</epp:phrase>
     <epp:phrase id="ldn_fieldopt_type_TentativeReject">Tentative Reject</epp:phrase>
+
+    <!-- Notify Linking -->
+    <epp:phrase id="metapage_title_links">Repository Links</epp:phrase>
+    <epp:phrase id="eprint_fieldname_notify_links">Repository Links</epp:phrase>
+
+    <epp:phrase id="Plugin/InputForm/Component/Field/NotifyLink:notify_link_help"><p>This section can be used to link the output to a record held in another repository. A request to form a relationship between the two records will be sent to the other repository and if this is accepted the record will appear on this output's summary page.</p></epp:phrase>
+
+    <epp:phrase id="Plugin/InputForm/Component/Field/NotifyLink:notify_links_url_input"><p>Please enter the URL of a record's repository landing page below</p>
+            <div>        <epc:pin name="input"/> <epc:pin name="request_button"/></div>
+    
+    </epp:phrase>
+
+    <epp:phrase id="Plugin/InputForm/Component/Field/NotifyLink:request_button">Send Request</epp:phrase>
 
 </epp:phrases>

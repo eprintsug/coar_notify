@@ -20,6 +20,8 @@ sub new
     return $self;
 }
 
+
+
 sub update_from_form
 {
     my( $self, $processor ) = @_;
@@ -31,16 +33,15 @@ sub update_from_form
 
     my $ibutton = $self->get_internal_button;
 
+    # we've submitted a new request
     if( $ibutton eq 'request' )
     {
         my @params = $session->param;
 
         my $url = $session->param( $self->{prefix}.'_url_input' );
-        print STDERR "url: $url\n";
 
         my $uri = URI->new( $url );
         my $base_url = $uri->scheme."://".$uri->host;
-
 
         # we have a url - let's make an LDN for the request
         my $ldn_ds = $session->dataset( "ldn" );
@@ -81,8 +82,8 @@ sub render_content
     $page->appendChild( $self->_render_url_input( $session, $eprint, $field) );
 
     # show existing notify graphs
-    #$page->appendChild( $self->_render_notify_graph( $session, $eprint, $field ) );
-    #
+    $page->appendChild( $self->_render_notify_requests( $session, $eprint, $field ) );
+    
     return $page;
 }
 
@@ -97,7 +98,6 @@ sub _render_url_input
 
     # intro/help text
     $div->appendChild( $self->html_phrase( 'notify_link_help' ) );
-
 
     # form
     my $bar = $self->html_phrase(
@@ -121,7 +121,26 @@ sub _render_url_input
     return $div;
 }
 
-sub _render_notify_graph
+sub _render_notify_requests
 {
-    
+    my( $self, $session, $eprint, $field ) = @_;
+
+    my $div = $session->make_element( 'div', class=>'ep_block notify_link_requests' );
+
+    # get our ldns
+    my $ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
+
+    $ldns->map( sub {
+        (undef, undef, my $ldn ) = @_;
+
+        my $status = $ldn->value( "status" );
+
+        print STDERR "ldn..." . $ldn->id . "\n";
+
+        $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
+        $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+ 
+    });
+
+    return $div;
 }
