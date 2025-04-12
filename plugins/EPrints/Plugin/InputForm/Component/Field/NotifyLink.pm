@@ -127,20 +127,26 @@ sub _render_notify_requests
 
     my $div = $session->make_element( 'div', class=>'ep_block notify_link_requests' );
 
-    # get our ldns
+    # get our outgoing ldns
     my $ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
+    if( $ldns->count > 0 )
+    {
 
-    $ldns->map( sub {
-        (undef, undef, my $ldn ) = @_;
+        $div->appendChild( my $outgoing_header = $session->make_element( 'h3' ) );
+        $outgoing_header->appendChild( $self->html_phrase( "outgoing_header" ) );
 
-        my $status = $ldn->value( "status" );
+        $ldns->map( sub {
+            (undef, undef, my $ldn ) = @_;
 
-        print STDERR "ldn..." . $ldn->id . "\n";
+            my $status = $ldn->value( "status" );
 
-        $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
-        $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
- 
-    });
+            $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+        });
+    }
+
+    # this may also be a useful place to show anything that has linked to us
+
 
     return $div;
 }

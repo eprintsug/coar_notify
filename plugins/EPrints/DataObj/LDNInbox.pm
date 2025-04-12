@@ -46,7 +46,6 @@ sub get_defaults
 sub find_or_create
 {
     my( $class, $session, $id ) = @_;
-    print STDERR "id....$id\n";
 
     my $inbox = $class->search_by_id($session, $id);
     if( !$inbox )
@@ -67,7 +66,6 @@ sub find_or_create
                 },
                 $session->dataset( $class->get_dataset_id )
             );
-            print STDERR "we have created an inbox.... $inbox\n";
         }
         else
         {
@@ -77,7 +75,6 @@ sub find_or_create
     }
     else
     {
-        print STDERR "Inbox dataobject present... using that\n";
     }
     return $inbox;
 }
@@ -86,15 +83,11 @@ sub discover_inbox
 {
 
   my( $class, $session, $url ) = @_;
-    print STDERR "url for discover_inbox....$url\n";
   use HTTP::Link::Parser ':standard';
   use LWP::UserAgent;
 
   my $ua = LWP::UserAgent->new;
   my $response = $ua->head($url);
-
-    print STDERR "response: $response\n";
-    print STDERR "body: " . $response->code . "...." . $response->content . "\n";
 
   # Parse link headers into an RDF::Trine::Model.
   my $model = parse_links_into_model($response);

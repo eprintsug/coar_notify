@@ -39,9 +39,10 @@ sub get_system_field_info
                 'Announce',
             ]       
         },
-        { name => "subject_id", type=> "int" },
-        { name => "subject_dataset", type=> "id" },
+        { name => "subject", type=> "text" },
         { name => "object", type=> "text" },
+        { name => "subject_id", type=> "int" }, # subject will often by a record in the repository, so useful to store this in a more retrievable way
+        { name => "subject_dataset", type=> "id" },
         { name => "content", type => "longtext" },
         { name => "status", type => "set", multiple=>0, options=>[
                 'unsent',

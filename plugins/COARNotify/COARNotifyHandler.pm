@@ -96,6 +96,10 @@ sub _inbox_handler
     {
         return _request_handler( $session, $r, "AnnounceEndorsement", $payload );
     }
+    elsif( ( grep { "coar-notify:RelationshipAction" eq $_ } @types ) && ( grep { "Announce" eq $_ } @types ) )
+    {
+        return _request_relationship_handler( $session, $r, "AnnounceRelationship", $payload );
+    }
     else
     {
         return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY; 
@@ -108,7 +112,7 @@ sub _inbox_handler
 
 sub _create_ldn
 {
-    my( $session, $type, $payload ) = @_;
+    my( $session, $type, $payload, $subject, $object) = @_;
    
     my $ds = $session->dataset( "ldn" );
     my $ldn = $ds->create_dataobj(
@@ -118,7 +122,7 @@ sub _create_ldn
             to => $payload->{target}->{id},
             type => $type,
             content => JSON::encode_json( $payload ),
-            timestamp => EPrints::Time::get_iso_timestamp,
+            timestamp => EPrints::Time::get_iso_timestamp,            
         },
     );
 
@@ -126,6 +130,18 @@ sub _create_ldn
     {
         $ldn->set_value( "in_reply_to", $payload->{inReplyTo} );
         $ldn->commit;
+    }
+
+    if( defined $subject )
+    {
+        $ldn->set_value( "subject", $subject );
+        $ldn->commit;    
+    }
+
+    if( defined $object )
+    {
+        $ldn->set_value( "object", $object );
+        $ldn->commit;    
     }
 
     return $ldn;
@@ -154,6 +170,51 @@ sub _system_description_handler
     return Apache2::Const::DONE;
 }
 
+sub _request_relationship_handler
+{
+    my( $session, $r, $type, $payload )  = @_;
+
+    # first does the payload indicate this is a relationship
+    return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY if $payload->{object}->{type} ne "Relationship";
+
+    # check we have the details we need
+    return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY if !exists $payload->{object}->{'as:subject'};
+    return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY if !exists $payload->{object}->{'as:object'};
+
+    # get the object = we expect this to be a landing page for an item in the repository
+    my $object = $payload->{object}->{'as:object'};
+    my $urlpath = $session->get_repository->get_conf( 'base_url' );
+    if( $object =~ s! ^${urlpath}/id/eprint/(0*)([1-9][0-9]*)\b !!x ||
+        $object =~ s! ^$urlpath/(0*)([1-9][0-9]*)\b !!x )
+    {
+        my $dataobjid = $2;
+        my $ds = $session->get_repository->dataset( "archive" );
+        my $dataobj = $ds->dataobj( $dataobjid );
+        if( $dataobj )
+        {
+            # this is in the live archive
+            # record this ldn
+            my $ldn = _create_ldn( 
+                $session, 
+                $type, 
+                $payload, 
+                $payload->{object}->{'as:subject'},
+                $payload->{object}->{'as:object'},
+            );
+
+            # and send back a positive response
+            return Apache2::Const::DONE;
+        }
+        else
+        {
+            # we don't appear to have this record
+            return Apache2::Const::HTTP_NOT_FOUND;
+        }
+    }
+
+    # we couldn't identify the object as a record in this repository
+    return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY;
+}
 
 
 1;
