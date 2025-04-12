@@ -37,4 +37,18 @@ sub get_notify_link_requests
     );
 }
 
+# get an eprint's confirmed links from other repository's
+sub get_links_from_repositories
+{
+    my( $session, $eprint ) = @_;
+    return $session->dataset( "ldn" )->search(
+        filters => [
+            { meta_fields => [qw( object )], value => $eprint->get_url, match => "EX" },
+            { meta_fields => [qw( type )], value => "AnnounceRelationship" },
+        ],
+        custom_order => "-timestamp",
+    );
+}
+
+
 1;
