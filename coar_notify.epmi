@@ -15,52 +15,84 @@
         </file>
         <file>
           <datasetid>document</datasetid>
+          <filename>cfg.d/notify_link.pl</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>cc04d4162657b026935e7a38daf285c5</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>1743</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>citations/ldn/notify_link_request.xml</filename>
+          <mime_type>application/xml</mime_type>
+          <hash>5db717f2298564ceeac6d9ebb67b2741</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>670</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
           <filename>lang/en/phrases/coar_notify.xml</filename>
           <mime_type>application/xml</mime_type>
-          <hash>b35f4fc9a177c3431ffb2d9d1c65979c</hash>
+          <hash>e0a2394a07ccc72ac5406a1c4d646578</hash>
           <hash_type>MD5</hash_type>
-          <filesize>1045</filesize>
+          <filesize>2246</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/COARNotify/COARNotifyHandler.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>8698c58c31a334974b132770acb97ba5</hash>
+          <hash>56a5deed3458fb0267b0ca97c47148ac</hash>
           <hash_type>MD5</hash_type>
-          <filesize>3714</filesize>
+          <filesize>5745</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/COARNotify/Utils.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>1c50509ef3112f1e85c5658418e456c9</hash>
+          <hash>8eb0b13cc96947b0bb62c86ea61a75d3</hash>
           <hash_type>MD5</hash_type>
-          <filesize>519</filesize>
+          <filesize>1404</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDN.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>d9ccc4f67cd6903200609741d4bd425b</hash>
+          <hash>3f02abea7feb9d19087befd0a546cb44</hash>
           <hash_type>MD5</hash_type>
-          <filesize>6391</filesize>
+          <filesize>8368</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDNInbox.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>8db0f43b4dfbed2960aaf8559e819590</hash>
+          <hash>38dc25cc75ea7da5ab6f6b8c8ec561e5</hash>
           <hash_type>MD5</hash_type>
-          <filesize>3114</filesize>
+          <filesize>3175</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>plugins/EPrints/Plugin/InputForm/Component/Field/NotifyLink.pm</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>52b8bf6d3a397369b7d21c59b7bc1af4</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>4823</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>static/style/auto/notify_link.css</filename>
+          <mime_type>text/plain</mime_type>
+          <hash>1eb194bb8e187925eea053f141cc9714</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>660</filesize>
         </file>
       </files>
       <mime_type>text/plain</mime_type>
       <format>text</format>
-      <main>plugins/EPrints/DataObj/LDNInbox.pm</main>
+      <main>static/style/auto/notify_link.css</main>
       <content>install</content>
     </document>
   </documents>
-  <version>0.2</version>
+  <version>0.3</version>
   <creators>
     <item>
       <name>

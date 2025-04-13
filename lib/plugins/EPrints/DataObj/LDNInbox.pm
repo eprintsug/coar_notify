@@ -49,8 +49,10 @@ sub find_or_create
 
     my $inbox = $class->search_by_id($session, $id);
     if( !$inbox )
-    {
-        my $url = $class->get_service_url($session, $id);
+    {    
+        # get the url from our config if we have it... but it may just be a url we want to keep and doesn't correspond with a config mapping
+        my $url = $class->get_service_url($session, $id) ? $class->get_service_url($session, $id) : $id;
+
         my $inbox_url = $class->discover_inbox($session, $url);
         if($inbox_url)
         {
@@ -64,7 +66,6 @@ sub find_or_create
                 },
                 $session->dataset( $class->get_dataset_id )
             );
-            print STDERR "we have created an inbox.... $inbox\n";
         }
         else
         {
@@ -74,7 +75,6 @@ sub find_or_create
     }
     else
     {
-        print STDERR "Inbox dataobject present... using that\n";
     }
     return $inbox;
 }
@@ -83,7 +83,6 @@ sub discover_inbox
 {
 
   my( $class, $session, $url ) = @_;
-
   use HTTP::Link::Parser ':standard';
   use LWP::UserAgent;
 
