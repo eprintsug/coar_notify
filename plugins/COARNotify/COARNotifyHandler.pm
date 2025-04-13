@@ -115,6 +115,13 @@ sub _create_ldn
     my( $session, $type, $payload, $subject, $object) = @_;
    
     my $ds = $session->dataset( "ldn" );
+
+    my $in_reply_to = undef;
+    if( defined $payload->{inReplyTo} )
+    {
+        $in_reply_to = $payload->{inReplyTo};
+    }
+
     my $ldn = $ds->create_dataobj(
         {
             uuid => $payload->{id},
@@ -123,26 +130,11 @@ sub _create_ldn
             type => $type,
             content => JSON::encode_json( $payload ),
             timestamp => EPrints::Time::get_iso_timestamp,            
+            in_reply_to => $in_reply_to,
+            subject => $subject,
+            object => $object,
         },
     );
-
-    if( defined $payload->{inReplyTo} )
-    {
-        $ldn->set_value( "in_reply_to", $payload->{inReplyTo} );
-        $ldn->commit;
-    }
-
-    if( defined $subject )
-    {
-        $ldn->set_value( "subject", $subject );
-        $ldn->commit;    
-    }
-
-    if( defined $object )
-    {
-        $ldn->set_value( "object", $object );
-        $ldn->commit;    
-    }
 
     return $ldn;
 }

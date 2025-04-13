@@ -73,10 +73,10 @@ sub get_defaults
 sub create_payload_and_send
 {
     
-    my( $self, $object, $actor, $sub_object ) = @_;
+    my( $self, $object, $actor, $sub_object, $type ) = @_;
 
     # first create the payload
-    my $json = $self->_create_payload($object, $actor, $sub_object);
+    my $json = $self->_create_payload($object, $actor, $sub_object, $type);
     $self->set_value("content", $json);
     $self->commit;
 
@@ -139,7 +139,7 @@ sub _inbox
 
 sub _create_payload
 {
-    my( $self, $object, $actor, $sub_object ) = @_;
+    my( $self, $object, $actor, $sub_object, $type ) = @_;
 
     my $session = $self->{session};
 
@@ -166,7 +166,7 @@ sub _create_payload
     # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
     use JSON; 
     my $payload = encode_json({
-	   '@context'=> [
+	'@context'=> [
         "https://www.w3.org/ns/activitystreams",
         "https://purl.org/coar/notify"
     ],
@@ -186,11 +186,11 @@ sub _create_payload
     "object"=> {
         "type"=> [
             "Page",
-            "sorg:WebPage"
+            "sorg:AboutPage"
         ],
         "id"=> $object->url,
         "ietf:cite-as"=> $object->url,
-        "url"=> {
+        "ietf:item"=> {
             "id"=> $sub_object->url,
             "mediaType"=> $sub_object->get_value("mime_type"),
             "type"=> [
@@ -203,7 +203,8 @@ sub _create_payload
         "id"=> $ldn_inbox->value( "id" ),
         "inbox"=> $ldn_inbox->value( "endpoint" ),
         "type"=> $ldn_inbox->value( "type" )
-    }
+    },
+    "type"=> $type
    });
 }
 
@@ -301,4 +302,16 @@ sub get_latest_response{
     my( $self ) = @_;
 
     return $self->get_responses->item(0);
+}
+
+# get the ldn this ldn is replying to
+sub get_in_reply_to_ldn{
+ 
+    my( $self ) = @_;
+ 
+    return $self->dataset->search(
+        filters => [
+            { meta_fields => [qw( uuid )], value => $self->value( "in_reply_to" ) },
+        ],
+    )->item(0);
 }
