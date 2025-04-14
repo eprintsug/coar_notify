@@ -65,9 +65,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDNInbox.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>d7cf14838aa9e26aac9ac631e9a7b6a8</hash>
+          <hash>673dfcadb5d428c2f0f67aac0971492d</hash>
           <hash_type>MD5</hash_type>
-          <filesize>3296</filesize>
+          <filesize>3391</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>

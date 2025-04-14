@@ -448,9 +448,9 @@ bl9yZXBseV90byIgKSB9LAogICAgICAgIF0sCiAgICApLT5pdGVtKDApOwp9Cg==
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDNInbox.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>d7cf14838aa9e26aac9ac631e9a7b6a8</hash>
+          <hash>673dfcadb5d428c2f0f67aac0971492d</hash>
           <hash_type>MD5</hash_type>
-          <filesize>3296</filesize>
+          <filesize>3391</filesize>
           <data encoding='base64'>cGFja2FnZSBFUHJpbnRzOjpEYXRhT2JqOjpMRE5JbmJveDsKCm91ciBASVNBID0gcXcoIEVQcmlu
 dHM6OkRhdGFPYmogKTsKCnVzZSBKU09OIHF3KGRlY29kZV9qc29uIGVuY29kZV9qc29uKTsKCnVz
 ZSBzdHJpY3Q7CnVzZSBEYXRhOjpEdW1wZXI7CnVzZSBFbmNvZGUgcXcoIGVuY29kZV91dGY4ICk7
@@ -501,14 +501,16 @@ dW5kZWYpOwoKICB3aGlsZSAobXkgJHN0YXRlbWVudCA9ICRpdGVyYXRvci0+bmV4dCkKICB7CiAg
 ICAgcmV0dXJuICRzdGF0ZW1lbnQtPm9iamVjdC0+dXJpIGlmICRzdGF0ZW1lbnQtPnByZWRpY2F0
 ZS0+dXJpIGVxICJodHRwOi8vd3d3LnczLm9yZy9ucy9sZHAjaW5ib3giCiAgfQogIHJldHVybiAw
 Owp9CgpzdWIgZ2V0X3NlcnZpY2VfdXJsCnsKICAgIG15KCAkY2xhc3MsICRzZXNzaW9uLCAkaWQg
-KSA9IEBfOwogICAgd2hpbGUobXkoJGtleSwgJGluYm94KSA9IGVhY2ggJXskc2Vzc2lvbi0+Z2V0
-X2NvbmYoImxkbl9pbmJveGVzIil9KXsKICAgICAgcmV0dXJuICRpbmJveC0+eyRpZH0gaWYoJGlu
-Ym94LT57JGlkfSk7CiAgICB9Cgp9CgpzdWIgc2VhcmNoX2J5X2lkCnsKICAgIG15KCAkY2xhc3Ms
-ICRzZXNzaW9uLCAkaWQgKSA9IEBfOwoKICAgIHJldHVybiAkc2Vzc2lvbi0+ZGF0YXNldCggJGNs
-YXNzLT5nZXRfZGF0YXNldF9pZCApLT5zZWFyY2goCiAgICAgICAgZmlsdGVycyA9PiBbewogICAg
-ICAgICAgICBtZXRhX2ZpZWxkcyA9PiBbcXcoIGlkICldLAogICAgICAgICAgICB2YWx1ZSA9PiAk
-aWQsCiAgICAgICAgICAgIG1hdGNoID0+ICJFWCIsCiAgICAgICAgfV0sCiAgICAgICAgY3VzdG9t
-X29yZGVyID0+ICItbGRuaW5ib3hpZCIsCiAgICApLT5pdGVtKDApOwp9CgoxOwo=
+KSA9IEBfOwogICAgCiAgICBpZiggZGVmaW5lZCAkc2Vzc2lvbi0+Z2V0X2NvbmYoImxkbl9pbmJv
+eGVzIikgKQogICAgewogICAgICAgIHdoaWxlKCBteSggJGtleSwgJGluYm94ICkgPSBlYWNoICV7
+JHNlc3Npb24tPmdldF9jb25mKCJsZG5faW5ib3hlcyIpfSApCiAgICAgICAgewogICAgICAgICAg
+ICByZXR1cm4gJGluYm94LT57JGlkfSBpZigkaW5ib3gtPnskaWR9KTsKICAgICAgICB9CiAgICB9
+Cn0KCnN1YiBzZWFyY2hfYnlfaWQKewogICAgbXkoICRjbGFzcywgJHNlc3Npb24sICRpZCApID0g
+QF87CgogICAgcmV0dXJuICRzZXNzaW9uLT5kYXRhc2V0KCAkY2xhc3MtPmdldF9kYXRhc2V0X2lk
+ICktPnNlYXJjaCgKICAgICAgICBmaWx0ZXJzID0+IFt7CiAgICAgICAgICAgIG1ldGFfZmllbGRz
+ID0+IFtxdyggaWQgKV0sCiAgICAgICAgICAgIHZhbHVlID0+ICRpZCwKICAgICAgICAgICAgbWF0
+Y2ggPT4gIkVYIiwKICAgICAgICB9XSwKICAgICAgICBjdXN0b21fb3JkZXIgPT4gIi1sZG5pbmJv
+eGlkIiwKICAgICktPml0ZW0oMCk7Cn0KCjE7Cg==
 </data>
         </file>
         <file>

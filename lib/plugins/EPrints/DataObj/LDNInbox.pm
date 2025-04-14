@@ -117,10 +117,14 @@ sub discover_inbox
 sub get_service_url
 {
     my( $class, $session, $id ) = @_;
-    while(my($key, $inbox) = each %{$session->get_conf("ldn_inboxes")}){
-      return $inbox->{$id} if($inbox->{$id});
+    
+    if( defined $session->get_conf("ldn_inboxes") )
+    {
+        while( my( $key, $inbox ) = each %{$session->get_conf("ldn_inboxes")} )
+        {
+            return $inbox->{$id} if($inbox->{$id});
+        }
     }
-
 }
 
 sub search_by_id
