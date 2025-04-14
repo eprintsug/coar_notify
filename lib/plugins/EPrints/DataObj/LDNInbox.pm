@@ -51,7 +51,16 @@ sub find_or_create
     if( !$inbox )
     {    
         # get the url from our config if we have it... but it may just be a url we want to keep and doesn't correspond with a config mapping
-        my $url = $class->get_service_url($session, $id) ? $class->get_service_url($session, $id) : $id;
+        my $url;
+        my $url_from_conf = $class->get_service_url($session, $id);
+        if( $url_from_conf )
+        {
+            $url = $url_from_conf;
+        }
+        else
+        {
+            $url = $id;
+        }
 
         my $inbox_url = $class->discover_inbox($session, $url);
         if($inbox_url)
