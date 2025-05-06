@@ -140,7 +140,7 @@ sub _render_notify_requests
             my $status = $ldn->value( "status" );
 
             $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
-            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_outgoing_request" ) );
         });
     }
 
@@ -156,7 +156,7 @@ sub _render_notify_requests
             my $status = "sent"; # highlights these as successes, which they should be if we're storing them from incoming requests
 
             $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
-            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_incoming_request" ) );
         });
     }
 

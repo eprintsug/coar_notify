@@ -23,7 +23,15 @@
         </file>
         <file>
           <datasetid>document</datasetid>
-          <filename>citations/ldn/notify_link_request.xml</filename>
+          <filename>citations/ldn/notify_link_incoming_request.xml</filename>
+          <mime_type>application/xml</mime_type>
+          <hash>ce6ee4327ae331283f2ee38eac550a3f</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>674</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>citations/ldn/notify_link_outgoing_request.xml</filename>
           <mime_type>application/xml</mime_type>
           <hash>5db717f2298564ceeac6d9ebb67b2741</hash>
           <hash_type>MD5</hash_type>
@@ -33,9 +41,9 @@
           <datasetid>document</datasetid>
           <filename>lang/en/phrases/coar_notify.xml</filename>
           <mime_type>application/xml</mime_type>
-          <hash>e0a2394a07ccc72ac5406a1c4d646578</hash>
+          <hash>6ddfe76768923e972ebb5e93f08da994</hash>
           <hash_type>MD5</hash_type>
-          <filesize>2246</filesize>
+          <filesize>2310</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -73,9 +81,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/InputForm/Component/Field/NotifyLink.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>52b8bf6d3a397369b7d21c59b7bc1af4</hash>
+          <hash>c5e643a16ab1423c848d95a428decfec</hash>
           <hash_type>MD5</hash_type>
-          <filesize>4823</filesize>
+          <filesize>4841</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
