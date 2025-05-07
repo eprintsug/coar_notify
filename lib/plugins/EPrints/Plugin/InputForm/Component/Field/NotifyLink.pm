@@ -83,7 +83,7 @@ sub render_content
 
     # show existing notify graphs
     $page->appendChild( $self->_render_notify_requests( $session, $eprint, $field ) );
-    
+
     return $page;
 }
 
@@ -102,21 +102,57 @@ sub _render_url_input
     # form
     my $bar = $self->html_phrase(
         $field->get_name.'_url_input',
-        input=>$session->render_noenter_input_field(
-            class=>'ep_form_text',
-            name=>$prefix.'_url_input',
-            id=>$prefix.'_url_input',
-            type=>'text',
-            value=>$self->{url},
-            onKeyPress=>'return EPJS_enter_click( event, \'_internal_'.$prefix.'_send_request\' )' ),
-        request_button=>$session->render_button(
-            name=>'_internal_'.$prefix.'_request',
-            class=>'ep_form_internal_button',
-            id=>'_internal_'.$prefix.'_request',
-            value=>$self->phrase( 'request_button' ) ),
+        input => $session->render_noenter_input_field(
+            class => 'ep_form_text',
+            name => $prefix.'_url_input',
+            id => $prefix.'_url_input',
+            type => 'text',
+            value => $self->{url},
+            onkeypress => 'return EPJS_block_enter( event )',
+        ),
+        request_button => $session->render_button(
+            name => '_internal_'.$prefix.'_request',
+            class => 'ep_form_internal_button',
+            id => '_internal_'.$prefix.'_request',
+            value => $self->phrase( 'request_button' ) 
+        ),
     );
 
     $div->appendChild( $bar );
+
+    if( defined $field->{input_lookup_url} )
+    {
+        my $prefix = $self->{prefix};
+
+        my $extra_params = URI->new( 'http:' );
+        #$extra_params->query( $field->{input_lookup_params} );
+        my @params = (
+            $extra_params->query_form,
+            id => $eprint->id,
+            field => 'url_input'
+        );
+        
+        if( defined $eprint )
+        {
+            push @params, dataobj => $eprint->id;
+        }
+        if( defined $self->{dataset} )
+        {
+            push @params, dataset => $self->{dataset}->id;
+        }
+
+        $extra_params->query_form( @params );
+        $extra_params = "&" . $extra_params->query;
+
+        my $url = EPrints::Utils::js_string( $field->{input_lookup_url} );
+        my $params = EPrints::Utils::js_string( $extra_params );
+        $div->appendChild( $session->make_javascript( <<EOJ ) );
+            new Metafield ('$prefix', 'url_input', {
+                input_lookup_url: $url,
+                input_lookup_params: $params
+            });
+EOJ
+    }
 
     return $div;
 }
