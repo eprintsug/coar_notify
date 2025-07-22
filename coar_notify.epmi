@@ -65,9 +65,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/DataObj/LDN.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>3f02abea7feb9d19087befd0a546cb44</hash>
+          <hash>ebaa95a3ececb6792a714e92aa509b07</hash>
           <hash_type>MD5</hash_type>
-          <filesize>8368</filesize>
+          <filesize>8525</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
