@@ -25,11 +25,13 @@ sub new
 sub update_from_form
 {
     my( $self, $processor ) = @_;
-
+        
     my $session = $self->{session};
     my $eprint = $self->{dataobj};
     my $field = $self->{config}->{field};
     my $user = $session->current_user;
+
+    # this action should be moved to an ajax and cgi call so we can better present information and updates to the user!
 
     my $ibutton = $self->get_internal_button;
 
@@ -41,9 +43,39 @@ sub update_from_form
         my $url = $session->param( $self->{prefix}.'_url_input' );
 
         my $uri = URI->new( $url );
+
+        my $valid_uri = 0;
+        if( $uri->scheme eq "http" )
+        {
+            $valid_uri = 1;
+        }
+
+        if( !$valid_uri )
+        {
+            # TODO: Display a message
+            return;
+        }
+
         my $base_url = $uri->scheme."://".$uri->host;
 
-        # we have a url - let's make an LDN for the request
+        # we have a url - let's make sure we haven't sent this before
+        my $outgoing_ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
+        my $existing_request = 0;
+        $outgoing_ldns->map( sub {
+            (undef, undef, my $ldn ) = @_;
+			if( $ldn->value( "object" ) eq $url && $ldn->value( "status" ) eq "sent" )
+			{
+				$existing_request = 1;
+			}
+        });
+
+		if( $existing_request )
+		{
+            # TODO: Display a message
+            # We have already sent this request successfully so don't do it again
+		    return;	
+		}
+
         my $ldn_ds = $session->dataset( "ldn" );
         my $ldn = EPrints::DataObj::LDN->create_from_data(
             $session,
@@ -78,6 +110,9 @@ sub render_content
 
     my $page = $session->make_element( 'div' );
 
+    # show a message
+    $page->appendChild( $self->_render_message( $session, $eprint, $field ) );
+
     # show URL form
     $page->appendChild( $self->_render_url_input( $session, $eprint, $field) );
 
@@ -87,6 +122,17 @@ sub render_content
     return $page;
 }
 
+sub _render_message
+{
+    my( $self, $session, $eprint, $field ) = @_;
+
+    my $prefix = $self->{prefix};
+
+    my $div = $session->make_element( 'div', style=>'padding: 5px;', class => "repo_link_message" );
+
+    return $div;
+
+}
 
 sub _render_url_input
 {

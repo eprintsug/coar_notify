@@ -49,9 +49,9 @@
           <datasetid>document</datasetid>
           <filename>plugins/COARNotify/COARNotifyHandler.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>56a5deed3458fb0267b0ca97c47148ac</hash>
+          <hash>aa0dd2d240486b0a77dd705b4f78a616</hash>
           <hash_type>MD5</hash_type>
-          <filesize>5745</filesize>
+          <filesize>6463</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -81,9 +81,17 @@
           <datasetid>document</datasetid>
           <filename>plugins/EPrints/Plugin/InputForm/Component/Field/NotifyLink.pm</filename>
           <mime_type>text/plain</mime_type>
-          <hash>aa2363949e95c91942ae510bc3946f36</hash>
+          <hash>e931313a85d0bca724aab55fa2a46ea5</hash>
           <hash_type>MD5</hash_type>
-          <filesize>5875</filesize>
+          <filesize>7067</filesize>
+        </file>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>static/images/epm/notify.jpg</filename>
+          <mime_type>image/jpeg</mime_type>
+          <hash>05f1fcfbae3a1b9cc2a7ca4abea66205</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>14186</filesize>
         </file>
         <file>
           <datasetid>document</datasetid>
@@ -99,8 +107,23 @@
       <main>static/style/auto/notify_link.css</main>
       <content>install</content>
     </document>
+    <document>
+      <files>
+        <file>
+          <datasetid>document</datasetid>
+          <filename>static/images/epm/notify.jpg</filename>
+          <mime_type>image/jpeg</mime_type>
+          <hash>05f1fcfbae3a1b9cc2a7ca4abea66205</hash>
+          <hash_type>MD5</hash_type>
+          <filesize>14186</filesize>
+        </file>
+      </files>
+      <format>image</format>
+      <main>static/images/epm/notify.jpg</main>
+      <content>coverimage</content>
+    </document>
   </documents>
-  <version>0.3</version>
+  <version>1.0</version>
   <creators>
     <item>
       <name>
@@ -118,4 +141,5 @@
     </item>
   </creators>
   <title>COAR Notify</title>
+  <icon>images/epm/notify.jpg</icon>
 </epm>
