@@ -73,10 +73,10 @@ sub get_defaults
 sub create_payload_and_send
 {
     
-    my( $self, $object, $actor, $sub_object, $type ) = @_;
+    my( $self, $object, $actor, $sub_object, $in_reply_to, $type ) = @_;
 
     # first create the payload
-    my $json = $self->_create_payload($object, $actor, $sub_object, $type);
+    my $json = $self->_create_payload($object, $actor, $sub_object, $in_reply_to, $type);
     $self->set_value("content", $json);
     $self->commit;
 
@@ -139,7 +139,7 @@ sub _inbox
 
 sub _create_payload
 {
-    my( $self, $object, $actor, $sub_object, $type ) = @_;
+    my( $self, $object, $actor, $sub_object, $in_reply_to, $type ) = @_;
 
     my $session = $self->{session};
 
@@ -165,7 +165,7 @@ sub _create_payload
     # we have our details, let's build our payload
     # this assumes the object is an eprint, the actor is a user and the sub_object is a document for now...
     use JSON; 
-    my $payload = encode_json({
+    my $payload = {
 	'@context'=> [
         "https://www.w3.org/ns/activitystreams",
         "https://purl.org/coar/notify"
@@ -205,7 +205,14 @@ sub _create_payload
         "type"=> $ldn_inbox->value( "type" )
     },
     "type"=> $type
-   });
+    };
+
+    if( defined $in_reply_to )
+    {
+        $payload->{inReplyTo} = $in_reply_to;    
+    }
+
+    return encode_json( $payload );
 }
 
 sub _create_relationship_payload
@@ -293,7 +300,7 @@ sub get_responses{
         filters => [
             { meta_fields => [qw( in_reply_to )], value => $self->value( "uuid" ) },
         ],
-        custom_order => "-timestamp",
+        custom_order => "-ldnid",
     );
 }
 

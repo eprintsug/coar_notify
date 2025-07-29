@@ -184,6 +184,23 @@ sub _request_relationship_handler
         my $dataobj = $ds->dataobj( $dataobjid );
         if( $dataobj )
         {
+            # does this link already exist?
+            my $existing_link = 0;
+            my $incoming_ldns = COARNotify::Utils::get_links_from_repositories( $session, $dataobj );
+            $incoming_ldns->map( sub {
+                (undef, undef, my $ldn ) = @_;
+                if( $ldn->value( "subject" ) eq $payload->{object}->{'as:subject'} )
+                {
+                    $existing_link = 1;
+                }
+            });
+
+            if( $existing_link )
+            {
+                # we already have a link for this...
+                return Apache2::Const::HTTP_UNPROCESSABLE_ENTITY;
+            }
+
             # this is in the live archive
             # record this ldn
             my $ldn = _create_ldn( 
@@ -194,6 +211,9 @@ sub _request_relationship_handler
                 $payload->{object}->{'as:object'},
             );
 
+            # regenerate the abstract
+            $dataobj->generate_static();
+            
             # and send back a positive response
             return Apache2::Const::DONE;
         }

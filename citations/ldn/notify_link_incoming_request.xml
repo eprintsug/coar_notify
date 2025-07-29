@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+        
+<div class="notify_link_ldn">
+    <div class="notify_link_metadata">
+        <span class="notify_link_ldn_metadata notify_link_timestamp">
+            <dt><epc:phrase ref="ldn_fieldname_timestamp" /></dt>
+            <dd><epc:print expr="timestamp"/></dd>
+        </span>
+        <span class="notify_link_ldn_metadata notify_link_from">
+           <dt><epc:phrase ref="ldn_fieldname_subject" /></dt>
+           <dd><epc:print expr="subject"/></dd>
+        </span>
+    </div>
+</div>
+
+</cite:citation>

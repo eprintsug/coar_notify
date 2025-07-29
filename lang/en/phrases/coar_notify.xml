@@ -8,6 +8,7 @@
     <epp:phrase id="ldn_fieldname_to">To</epp:phrase>
     <epp:phrase id="ldn_fieldname_from">From</epp:phrase>
     <epp:phrase id="ldn_fieldname_type">Type</epp:phrase>
+    <epp:phrase id="ldn_fieldname_subject">Subject</epp:phrase>
     <epp:phrase id="ldn_fieldname_object">Object</epp:phrase>
 
     <!-- LDN Types -->

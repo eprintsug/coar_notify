@@ -1,3 +1,5 @@
+$c->{plugins}{'InputForm::Component::Field::NotifyLink'}{params}{disable} = 0;
+
 $c->add_dataset_field( "eprint", 
     {
         name => "notify_links",

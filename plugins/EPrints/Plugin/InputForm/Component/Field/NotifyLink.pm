@@ -25,11 +25,13 @@ sub new
 sub update_from_form
 {
     my( $self, $processor ) = @_;
-
+        
     my $session = $self->{session};
     my $eprint = $self->{dataobj};
     my $field = $self->{config}->{field};
     my $user = $session->current_user;
+
+    # this action should be moved to an ajax and cgi call so we can better present information and updates to the user!
 
     my $ibutton = $self->get_internal_button;
 
@@ -41,9 +43,39 @@ sub update_from_form
         my $url = $session->param( $self->{prefix}.'_url_input' );
 
         my $uri = URI->new( $url );
+
+        my $valid_uri = 0;
+        if( $uri->scheme eq "http" )
+        {
+            $valid_uri = 1;
+        }
+
+        if( !$valid_uri )
+        {
+            # TODO: Display a message
+            return;
+        }
+
         my $base_url = $uri->scheme."://".$uri->host;
 
-        # we have a url - let's make an LDN for the request
+        # we have a url - let's make sure we haven't sent this before
+        my $outgoing_ldns = COARNotify::Utils::get_notify_link_requests( $session, $eprint );
+        my $existing_request = 0;
+        $outgoing_ldns->map( sub {
+            (undef, undef, my $ldn ) = @_;
+			if( $ldn->value( "object" ) eq $url && $ldn->value( "status" ) eq "sent" )
+			{
+				$existing_request = 1;
+			}
+        });
+
+		if( $existing_request )
+		{
+            # TODO: Display a message
+            # We have already sent this request successfully so don't do it again
+		    return;	
+		}
+
         my $ldn_ds = $session->dataset( "ldn" );
         my $ldn = EPrints::DataObj::LDN->create_from_data(
             $session,
@@ -78,15 +110,29 @@ sub render_content
 
     my $page = $session->make_element( 'div' );
 
+    # show a message
+    $page->appendChild( $self->_render_message( $session, $eprint, $field ) );
+
     # show URL form
     $page->appendChild( $self->_render_url_input( $session, $eprint, $field) );
 
     # show existing notify graphs
     $page->appendChild( $self->_render_notify_requests( $session, $eprint, $field ) );
-    
+
     return $page;
 }
 
+sub _render_message
+{
+    my( $self, $session, $eprint, $field ) = @_;
+
+    my $prefix = $self->{prefix};
+
+    my $div = $session->make_element( 'div', style=>'padding: 5px;', class => "repo_link_message" );
+
+    return $div;
+
+}
 
 sub _render_url_input
 {
@@ -102,21 +148,57 @@ sub _render_url_input
     # form
     my $bar = $self->html_phrase(
         $field->get_name.'_url_input',
-        input=>$session->render_noenter_input_field(
-            class=>'ep_form_text',
-            name=>$prefix.'_url_input',
-            id=>$prefix.'_url_input',
-            type=>'text',
-            value=>$self->{url},
-            onKeyPress=>'return EPJS_enter_click( event, \'_internal_'.$prefix.'_send_request\' )' ),
-        request_button=>$session->render_button(
-            name=>'_internal_'.$prefix.'_request',
-            class=>'ep_form_internal_button',
-            id=>'_internal_'.$prefix.'_request',
-            value=>$self->phrase( 'request_button' ) ),
+        input => $session->render_noenter_input_field(
+            class => 'ep_form_text',
+            name => $prefix.'_url_input',
+            id => $prefix.'_url_input',
+            type => 'text',
+            value => $self->{url},
+            onkeypress => 'return EPJS_block_enter( event )',
+        ),
+        request_button => $session->render_button(
+            name => '_internal_'.$prefix.'_request',
+            class => 'ep_form_internal_button',
+            id => '_internal_'.$prefix.'_request',
+            value => $self->phrase( 'request_button' ) 
+        ),
     );
 
     $div->appendChild( $bar );
+
+    if( defined $field->{input_lookup_url} )
+    {
+        my $prefix = $self->{prefix};
+
+        my $extra_params = URI->new( 'http:' );
+        #$extra_params->query( $field->{input_lookup_params} );
+        my @params = (
+            $extra_params->query_form,
+            id => $eprint->id,
+            field => 'url_input'
+        );
+        
+        if( defined $eprint )
+        {
+            push @params, dataobj => $eprint->id;
+        }
+        if( defined $self->{dataset} )
+        {
+            push @params, dataset => $self->{dataset}->id;
+        }
+
+        $extra_params->query_form( @params );
+        $extra_params = "&" . $extra_params->query;
+
+        my $url = EPrints::Utils::js_string( $field->{input_lookup_url} );
+        my $params = EPrints::Utils::js_string( $extra_params );
+        $div->appendChild( $session->make_javascript( <<EOJ ) );
+            new Metafield ('$prefix', 'url_input', {
+                input_lookup_url: $url,
+                input_lookup_params: $params
+            });
+EOJ
+    }
 
     return $div;
 }
@@ -140,7 +222,7 @@ sub _render_notify_requests
             my $status = $ldn->value( "status" );
 
             $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
-            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_outgoing_request" ) );
         });
     }
 
@@ -156,7 +238,7 @@ sub _render_notify_requests
             my $status = "sent"; # highlights these as successes, which they should be if we're storing them from incoming requests
 
             $div->appendChild( my $ldn_div = $session->make_element( "div", class => "notify_link_ldn_request notify_link_$status" ) );
-            $ldn_div->appendChild( $ldn->render_citation( "notify_link_request" ) );
+            $ldn_div->appendChild( $ldn->render_citation( "notify_link_incoming_request" ) );
         });
     }
 
